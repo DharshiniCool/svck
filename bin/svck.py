@@ -35,6 +35,11 @@ class svckLinter(AsFigoLinter):
         parser = verible_verilog_syntax.VeribleVerilogSyntax()
         return parser.parse_files([self.testName], options={"gen_tree": True})
 
+    def _init_(self, configFile, logLevel=logging.INFO):
+        super()._init_(configFile=configFile, logLevel=logLevel)
+        # Automatically discover and register all subclasses of AsFigoLintRule
+        self.rules = [rule_cls(self) for rule_cls in AsFigoLintRule._subclasses_()]
+
     def runLinter(self):
         """Runs all registered lint rules on the Verilog file."""
         treeData = self.loadSyntaxTree()
